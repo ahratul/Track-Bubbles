@@ -37,7 +37,7 @@ st.write("---")
 def gray(image):
     return image[:, :, 1]
 
-
+image=st.selectbox("Image", city)
 frames = gray(pims.open("Original.png"))
 st.subheader('Original Image')
 st.write(frames[0])
