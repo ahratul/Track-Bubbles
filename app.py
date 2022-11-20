@@ -5,6 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pims
 import trackpy as tp
+import glob
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -37,24 +38,34 @@ st.write("---")
 def gray(image):
     return image[:, :, 1]
 
-image=st.selectbox("Image", city)
-frames = gray(pims.open("Original.png"))
-st.subheader('Original Image')
-st.write(frames[0])
-st.write("---")
 
-st.subheader('Detected Bubbles From Image')
-f = tp.locate(frames[0], 11, invert=True)
-h = tp.annotate(f, frames[0])
+images = glob.glob('images/*.png')
 
-st.pyplot(h.figure.show())
+o = []
+for i in images:
+    if i not in o:
+        o.append(i)
 
-st.write("---")
+image = st.selectbox("Image", o)
 
-st.subheader('Counted Bubbles from Image')
-fig, ax = plt.subplots()
-ax.hist(f['mass'], bins=20)
+if st.button('Detect Bubbles From Image'):
+    frames = gray(pims.open(image))
+    st.subheader('Original Image')
+    st.write(frames[0])
+    st.write("---")
 
-# Optionally, label the axes.
-ax.set(xlabel='mass', ylabel='count')
-st.pyplot(fig.show())
+    st.subheader('Detected Bubbles From Image')
+    f = tp.locate(frames[0], 11, invert=True)
+    h = tp.annotate(f, frames[0])
+
+    st.pyplot(h.figure.show())
+
+    st.write("---")
+
+    st.subheader('Counted Bubbles from Image')
+    fig, ax = plt.subplots()
+    ax.hist(f['mass'], bins=20)
+
+    # Optionally, label the axes.
+    ax.set(xlabel='mass', ylabel='count')
+    st.pyplot(fig.show())
